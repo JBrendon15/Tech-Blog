@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const dashboardRoutes = require('./dashboard');
-const { Post, User } = require('../models');
+const { Post, User, Comment } = require('../models');
 
 router.use('/dashboard', dashboardRoutes);
 
@@ -14,7 +14,6 @@ router.get('/', async (req, res) => {
         const posts = postData.map((data) =>
             data.get({ plain: true })
         );
-        // res.status(200).json(allPosts);
         console.log(posts);
         res.render('all-posts', {
             posts,
@@ -25,13 +24,21 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/signup', (req, res) => {
+router.get('/signup', async (req, res) => {
     res.render('signup')
 });
 
-router.get('/login', (req, res) => {
+router.get('/login', async (req, res) => {
     res.render('login')
 });
 
+router.get('/post/id', async (req, res) => {
+    try{
+        const post = await Post.findByPk(req.params.id)
+    }
+    catch(err) {
+        res.status(400).json(err);
+    }
+})
 
 module.exports = router;
