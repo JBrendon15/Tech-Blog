@@ -34,12 +34,33 @@ router.get('/login', async (req, res) => {
 router.get('/post/:id', async (req, res) => {
     try{
         const post = await Post.findByPk(req.params.id, {
-            include: {
-                model: User,
-            },
-            include: {
-                model: Comment,
-            }
+            include: [
+                {
+                    model: Comment,
+                    attributes: [
+                        'id',
+                        'body',
+                        'created_at',
+                        'postId',
+                        'userId',
+                    ],
+                    include: [
+                        {
+                            model: User,
+                            attributes: [
+                                'username',
+                            ],
+                        },
+                    ],
+                    
+                },
+                {
+                    model: User,
+                    attributes: [
+                        'username'
+                    ]
+                } 
+            ]
         })
         console.log(post)
         res.render('single-post', {
