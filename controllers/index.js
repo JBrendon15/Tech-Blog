@@ -14,7 +14,6 @@ router.get('/', async (req, res) => {
         const posts = postData.map((data) =>
             data.get({ plain: true })
         );
-        console.log(posts);
         res.render('all-posts', {
             posts,
         });
@@ -32,9 +31,20 @@ router.get('/login', async (req, res) => {
     res.render('login')
 });
 
-router.get('/post/id', async (req, res) => {
+router.get('/post/:id', async (req, res) => {
     try{
-        const post = await Post.findByPk(req.params.id)
+        const post = await Post.findByPk(req.params.id, {
+            include: {
+                model: User,
+            },
+            include: {
+                model: Comment,
+            }
+        })
+        console.log(post)
+        res.render('single-post', {
+            post,
+        })
     }
     catch(err) {
         res.status(400).json(err);
