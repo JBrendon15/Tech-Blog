@@ -1,12 +1,16 @@
 const router = require('express').Router();
 const dashboardRoutes = require('./dashboard');
-const { Post } = require('../models')
+const { Post, User } = require('../models')
 
 router.use('/dashboard', dashboardRoutes);
 
 router.get('/', async (req, res) => {
     try {
-        const postData = await Post.findAll();
+        const postData = await Post.findAll({
+            include: [
+                { model: User }
+            ]
+        });
         const posts = postData.map((data) =>
             data.get({ plain: true })
         );
