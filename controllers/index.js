@@ -1,14 +1,22 @@
 const router = require('express').Router();
 const dashboardRoutes = require('./dashboard');
+const { Post } = require('../models')
 
 router.use('/dashboard', dashboardRoutes);
 
 router.get('/', async (req, res) => {
-    try{
-        const allPosts = await Post.findAll();
-        res.status(200).json(allPosts);
+    try {
+        const postData = await Post.findAll();
+        const posts = postData.map((data) =>
+            data.get({ plain: true })
+        );
+        // res.status(200).json(allPosts);
+        console.log(posts);
+        res.render('all-posts', {
+            posts,
+        });
     }
-    catch(err) {
+    catch (err) {
         res.status(400).json(err);
     }
 })
